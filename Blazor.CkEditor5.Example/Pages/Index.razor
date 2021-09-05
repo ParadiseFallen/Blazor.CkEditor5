@@ -1,0 +1,26 @@
+﻿@page "/"
+    <Blazor.CkEditor5.Components.CkEditor Data="@Content" Options="Options">
+
+    </Blazor.CkEditor5.Components.CkEditor>
+
+    <button @onclick="()=>ChangeData()">
+        1
+    </button>
+@code
+{
+    public string Content { get; set; } = "<h1>123123</h1>";
+    public Models.CkEditorOptions Options { get; } = Models.CkEditorOptions.Default;
+    public async Task ChangeData()
+    {
+        Func<int,string,Task> builder = (int delay,string text) => Task.Run(async()=> {
+            Console.WriteLine($"Run : {text}");
+            await Task.Delay(delay);
+            Content = text;
+            Console.WriteLine($"End : {text}");
+        });
+
+        await Task.WhenAll(builder(1000,"long"), builder(200, "short"), builder(600, "meduim"));
+        Console.WriteLine(Content);
+        Console.WriteLine();
+    }
+}

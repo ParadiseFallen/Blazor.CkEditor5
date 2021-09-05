@@ -1,0 +1,66 @@
+﻿@using Microsoft.JSInterop
+@using Blazor.CkEditor5.Models
+@inject IJSRuntime Js
+@implements IAsyncDisposable
+<div>
+    <textarea @ref="EditorElement" >
+        @*@Data*@
+    </textarea>
+</div>
+
+
+@code {
+
+    private ElementReference EditorElement { get; set; }
+    private IJSObjectReference JsEditorInstance { get; set; }
+
+    public bool IsInitialized { get; set; }
+
+    private string _data;
+
+    [Parameter]
+    public string Data
+    {
+        get => _data;
+        set
+        {
+            if (_data == value)
+                return;
+            _data = value;
+            if (IsInitialized)
+                SetData(value);
+        }
+    }
+
+    [Parameter]
+    public CkEditorOptions Options { get; set; } = CkEditorOptions.Default;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        JsEditorInstance = await Js.InvokeAsync<IJSObjectReference>("ClassicEditor.create", EditorElement, Options, DotNetObjectReference.Create(this));
+        IsInitialized = true;
+    }
+
+    [JSInvokable]
+    public Task EditorContentChanged(string data)
+    {
+        _data = data;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    public async Task SetData(string content)
+    {
+        await JsEditorInstance.InvokeVoidAsync("data.set", content);
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await JsEditorInstance.InvokeVoidAsync("destroy");
+        GC.SuppressFinalize(this);
+    }
+}

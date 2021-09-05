@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>FallenParadise</Copyright>
+    <PackageProjectUrl>https://github.com/ParadiseFallen/Blazor.CkEditor5</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ParadiseFallen/Blazor.CkEditor5</RepositoryUrl>
+    <Authors>FallenParadise</Authors>
   </PropertyGroup>
 
   

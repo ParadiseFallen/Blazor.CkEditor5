@@ -3,8 +3,8 @@
 @inject IJSRuntime Js
 @implements IAsyncDisposable
 <div>
-    <textarea @ref="EditorElement" >
-        @*@Data*@
+    <textarea @ref="EditorElement">
+        @Content
     </textarea>
 </div>
 
@@ -16,21 +16,25 @@
 
     public bool IsInitialized { get; set; }
 
-    private string _data;
+    private string _content;
 
     [Parameter]
-    public string Data
+    public string Content
     {
-        get => _data;
+        get => _content;
         set
         {
-            if (_data == value)
+            if (_content == value)
                 return;
-            _data = value;
+            _content = value;
             if (IsInitialized)
                 SetData(value);
+
         }
     }
+
+    [Parameter]
+    public EventCallback<string> ContentChanged { get; set; }
 
     [Parameter]
     public CkEditorOptions Options { get; set; } = CkEditorOptions.Default;
@@ -39,17 +43,17 @@
     {
         if (!firstRender)
             return;
-
         JsEditorInstance = await Js.InvokeAsync<IJSObjectReference>("ClassicEditor.create", EditorElement, Options, DotNetObjectReference.Create(this));
         IsInitialized = true;
     }
 
     [JSInvokable]
-    public Task EditorContentChanged(string data)
+    public async Task EditorContentChanged(string data)
     {
-        _data = data;
+        _content = data;
+        if (ContentChanged.HasDelegate)
+            await ContentChanged.InvokeAsync(data);
         StateHasChanged();
-        return Task.CompletedTask;
     }
 
     public async Task SetData(string content)

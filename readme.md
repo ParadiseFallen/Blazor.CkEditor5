@@ -16,7 +16,7 @@ Add using
 ```
 Use component
 ```cs
-<CkEditor Data="@Content" Options="@Options"/>
+<CkEditor @bind-Content="@Content" Options="@Options"/>
 ```
 Options is `Dictionary<string,object>` and you can configure it with [documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/configuration.html)
 

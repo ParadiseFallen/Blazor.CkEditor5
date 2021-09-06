@@ -1,26 +1,33 @@
 ﻿@page "/"
-    <Blazor.CkEditor5.Components.CkEditor Data="@Content" Options="Options">
+@using Blazor.CkEditor5.Components
+    <CkEditor @bind-Content="Content" Options="Options" >
 
-    </Blazor.CkEditor5.Components.CkEditor>
+    </CkEditor>
 
     <button @onclick="()=>ChangeData()">
         1
     </button>
 @code
 {
-    public string Content { get; set; } = "<h1>123123</h1>";
+    public string Content { get; set; }
     public Models.CkEditorOptions Options { get; } = Models.CkEditorOptions.Default;
+    protected override void OnInitialized()
+    {
+        //Content = "preset";
+    }
     public async Task ChangeData()
     {
-        Func<int,string,Task> builder = (int delay,string text) => Task.Run(async()=> {
-            Console.WriteLine($"Run : {text}");
-            await Task.Delay(delay);
-            Content = text;
-            Console.WriteLine($"End : {text}");
-        });
-
-        await Task.WhenAll(builder(1000,"long"), builder(200, "short"), builder(600, "meduim"));
+        //Console.WriteLine(Controll.Data);
         Console.WriteLine(Content);
-        Console.WriteLine();
+        //Func<int,string,Task> builder = (int delay,string text) => Task.Run(async()=> {
+        //    Console.WriteLine($"Run : {text}");
+        //    await Task.Delay(delay);
+        //    Content = text;
+        //    Console.WriteLine($"End : {text}");
+        //});
+
+        //await Task.WhenAll(builder(1000,"long"), builder(200, "short"), builder(600, "meduim"));
+        //Console.WriteLine(Content);
+        //Console.WriteLine();
     }
 }

@@ -21,15 +21,14 @@
     [Parameter]
     public string Content
     {
-        get => _content;
+        get=> _content ?? "";
         set
         {
-            if (_content == value)
+            if (Content == value)
                 return;
             _content = value;
             if (IsInitialized)
-                SetData(value);
-
+                SetData(Content);
         }
     }
 
@@ -59,7 +58,6 @@
     public async Task SetData(string content)
     {
         await JsEditorInstance.InvokeVoidAsync("data.set", content);
-        StateHasChanged();
     }
 
     public async ValueTask DisposeAsync()
